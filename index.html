@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Interaktiv Hemsida</title>
+    <style>
+        /* Grundläggande stil för att ta bort marginaler och fyllningar */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black; /* Startar med svart bakgrund */
+        }
+
+        /* Bakgrundsbild med fade-in animation */
+        #background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('bakgrund.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            animation: fadeInBackground 5s forwards;
+            animation-delay: 2s; /* Fördröjning på 2 sekunder */
+        }
+
+        @keyframes fadeInBackground {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Container för texten */
+        #text-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 200px; /* Ökad höjd för att visa mer text */
+            overflow: hidden;
+            display: none;
+            text-align: center;
+        }
+
+        /* Stil för scrollande text */
+        #scrolling-text {
+            font-size: 36px;
+            color: yellow;
+            animation: scrollText 20s linear;
+            line-height: 1.5;
+        }
+
+        @keyframes scrollText {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(-100%);
+            }
+        }
+
+        /* Videon */
+        #video-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        #video-container video {
+            width: 1000px;
+            height: 800px;
+        }
+
+        /* E-postadress */
+        #email-link {
+            position: absolute;
+            color: white;
+            font-size: 18px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Canvas för pixeleffekten */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Bakgrundsbilden -->
+    <div id="background"></div>
+
+    <!-- Text-container -->
+    <div id="text-container">
+        <!-- Scrollande text -->
+        <div id="scrolling-text">
+            Do you want to gain a deeper understanding of AI and ChatGPT?<br>
+            For 2000 bucks I give a course that you will never forget!
+        </div>
+    </div>
+
+    <!-- Videon -->
+    <div id="video-container">
+        <video id="video-element" controls>
+            <source src="video.mp4" type="video/mp4">
+            <source src="video.webm" type="video/webm">
+            Din webbläsare stödjer inte videouppspelning.
+        </video>
+    </div>
+
+    <!-- Canvas för pixeleffekten -->
+    <canvas id="canvas"></canvas>
+
+    <!-- E-postadress -->
+    <a href="mailto:mr.askman@gmail.com" id="email-link">mr.askman@gmail.com</a>
+
+    <script>
+        // Visa texten efter att bakgrundsbilden har tonat in
+        setTimeout(function() {
+            document.getElementById('text-container').style.display = 'block';
+        }, 7000); // 2 sekunder (svart) + 5 sekunder (fade-in)
+
+        // Visa videon efter att texten har scrollat klart
+        setTimeout(function() {
+            document.getElementById('text-container').style.display = 'none';
+            document.getElementById('video-container').style.display = 'block';
+            var video = document.getElementById('video-element');
+            video.play();
+        }, 27000); // 7 sekunder (bakgrund) + 20 sekunder (text)
+
+        // När videon är slut, visa pixeleffekten
+        var video = document.getElementById('video-element');
+        video.addEventListener('ended', function() {
+            document.getElementById('video-container').style.display = 'none';
+            startPixelEffect();
+        });
+
+        // Funktion för att starta pixeleffekten
+        function startPixelEffect() {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            var background = document.getElementById('background');
+
+            // Sätt canvas storlek
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            canvas.style.display = 'block';
+
+            // Rita bakgrundsbilden på canvas
+            ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+            // Dölj bakgrundsbilden
+            background.style.display = 'none';
+
+            var pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            var particles = [];
+
+            // Skapa partiklar
+            for (var y = 0; y < canvas.height; y += 4) {
+                for (var x = 0; x < canvas.width; x += 4) {
+                    var index = (x + y * canvas.width) * 4;
+                    var r = pixels.data[index];
+                    var g = pixels.data[index + 1];
+                    var b = pixels.data[index + 2];
+                    var a = pixels.data[index + 3];
+
+                    if (a > 0) {
+                        particles.push({
+                            x: x,
+                            y: y,
+                            color: 'rgba(' + r + ',' + g + ',' + b + ',' + a / 255 + ')',
+                            vx: (Math.random() - 0.5) * 10,
+                            vy: (Math.random() - 0.5) * 10
+                        });
+                    }
+                }
+            }
+
+            // Rensa canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            var explosionTime = 2000; // 2 sekunder
+            var startTime = Date.now();
+
+            // Animeringsloop
+            function animate() {
+                var timeElapsed = Date.now() - startTime;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particles.forEach(function(particle) {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+
+                    ctx.fillStyle = particle.color;
+                    ctx.fillRect(particle.x, particle.y, 2, 2);
+                });
+
+                if (timeElapsed < explosionTime) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Rensa canvas och visa endast e-postadressen
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    canvas.style.display = 'none';
+                }
+            }
+
+            animate();
+        }
+
+        // Animerad e-postadress som flyger runt och ändrar färg
+        var emailLink = document.getElementById('email-link');
+        var maxWidth = window.innerWidth - emailLink.offsetWidth;
+        var maxHeight = window.innerHeight - emailLink.offsetHeight;
+
+        // Startposition
+        var posX = Math.random() * maxWidth;
+        var posY = Math.random() * maxHeight;
+        emailLink.style.left = posX + 'px';
+        emailLink.style.top = posY + 'px';
+
+        // Hastighet
+        var velocityX = (Math.random() * 2 - 1) * 50; // pixlar per sekund
+        var velocityY = (Math.random() * 2 - 1) * 50; // pixlar per sekund
+
+        function animateEmail(timestamp) {
+            if (!animateEmail.lastTimestamp) animateEmail.lastTimestamp = timestamp;
+            var delta = (timestamp - animateEmail.lastTimestamp) / 1000; // sekunder
+            animateEmail.lastTimestamp = timestamp;
+
+            // Uppdatera position
+            posX += velocityX * delta;
+            posY += velocityY * delta;
+
+            // Studsa mot kanterna
+            if (posX < 0 || posX > maxWidth) {
+                velocityX = -velocityX;
+            }
+            if (posY < 0 || posY > maxHeight) {
+                velocityY = -velocityY;
+            }
+
+            // Håll positionen inom fönstret
+            posX = Math.max(0, Math.min(posX, maxWidth));
+            posY = Math.max(0, Math.min(posY, maxHeight));
+
+            emailLink.style.left = posX + 'px';
+            emailLink.style.top = posY + 'px';
+
+            // Ändra färg kontinuerligt
+            var hue = (timestamp / 10) % 360;
+            emailLink.style.color = 'hsl(' + hue + ', 100%, 50%)';
+
+            requestAnimationFrame(animateEmail);
+        }
+
+        // Starta animeringen
+        requestAnimationFrame(animateEmail);
+
+        // Uppdatera maxWidth och maxHeight vid fönsterändring
+        window.addEventListener('resize', function() {
+            maxWidth = window.innerWidth - emailLink.offsetWidth;
+            maxHeight = window.innerHeight - emailLink.offsetHeight;
+        });
+    </script>
+</body>
+</html>
