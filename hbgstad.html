@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helsingborgs Stads Organisationskarta</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .node {
+            cursor: pointer;
+            fill: #ccc;
+            stroke: #3182bd;
+            stroke-width: 1.5px;
+        }
+        .link {
+            fill: none;
+            stroke: #3182bd;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 8px;
+            background: #f4f4f4;
+            border: 1px solid #aaa;
+            pointer-events: none;
+        }
+    </style>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+<body>
+    <h1>Helsingborgs Stads Organisationskarta</h1>
+    <svg width="960" height="600"></svg>
+    <script>
+        var treeData = {
+            name: "Kommunfullmäktige",
+            children: [
+                {
+                    name: "Kommunstyrelsen",
+                    children: [
+                        {
+                            name: "Nämnder",
+                            children: [
+                                { name: "Vård- och omsorgsnämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/vard-och-omsorgsforvaltningen/" },
+                                { name: "Socialnämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/socialforvaltningen/" },
+                                { name: "Stadsbyggnadsnämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/stadsbyggnadsforvaltningen/" },
+                                { name: "Barn- och utbildningsnämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/skol-och-fritidsforvaltningen/" },
+                                { name: "Kulturnämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/kulturforvaltningen/" },
+                                { name: "Miljönämnden", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/miljoforvaltningen/" }
+                            ]
+                        },
+                        {
+                            name: "Bolag",
+                            children: [
+                                { name: "Helsingborgshem AB", link: "https://helsingborgshem.se/" },
+                                { name: "Öresundskraft AB", link: "https://www.oresundskraft.se/" },
+                                { name: "Helsingborgs Hamn AB", link: "https://www.port.helsingborg.se/" },
+                                { name: "Helsingborg Arena och Scen AB", link: "https://helsingborg.se/uppleva-och-gora/arena-och-scener/" }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    name: "Stadsledningsförvaltningen",
+                    children: [
+                        { name: "Avdelningen för ekonomi och styrning", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "Avdelningen för strategisk samhällsutveckling", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "Digitaliseringsavdelningen", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "Avdelningen för innovation och transformation", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "HR-avdelningen", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "Avdelningen för kommunikation och näringsliv", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" },
+                        { name: "Avdelningen för juridik och service", link: "https://helsingborg.se/kommun-och-politik/kommunens-organisation/forvaltningar/" }
+                    ]
+                }
+            ]
+        };
+
+        var margin = { top: 20, right: 90, bottom: 30, left: 90 },
+            width = 960 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
+
+        var svg = d3.select("svg")
+            .attr("width", width + margin.right + margin.left)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var i = 0,
+            duration = 750,
+            root;
+
+        var treemap = d3.tree().size([height, width]);
+
+        root = d3.hierarchy(treeData, function(d) { return d.children; });
+        root.x0 = height / 2;
+        root.y0 = 0;
+
+        update(root);
+
+        function update(source) {
+
+            var treeData = treemap(root);
+
+            var nodes = treeData.descendants(),
+                links = treeData.descendants().slice(1);
+
+            nodes.forEach(function(d){ d.y = d.depth * 180; });
+
+            var node = svg.selectAll('g.node')
+                .data(nodes, function(d) { return d.id || (d.id = ++i); });
+
+            var nodeEnter = node.enter().append('g')
+                .attr('class', 'node')
+                .attr("transform", function(d) {
+                    return "translate(" + source.y0 + "," + source.x0 + ")";
+                })
+                .on('click', click);
+
+            nodeEnter.append('circle')
+                .attr('class', 'node')
+                .attr('r', 1e-6)
+                .style("fill", function(d) {
+                    return d._children ? "lightsteelblue" : "#fff";
+                });
+
+            nodeEnter.append('a')
+                .attr("xlink:href", function(d) { return d.data.link ? d.data.link : null; })
+                .append('text')
+                .attr("dy", ".35em")
+                .attr("x", function(d) {
+                    return d.children || d._children ? -13 : 13;
+                })
+                .attr("text-anchor", function(d) {
+                    return d.children || d._children ? "end" : "start";
+                })
+                .text(function(d) { return d.data.name; });
+
+            var nodeUpdate = nodeEnter.merge(node);
+
+            nodeUpdate.transition()
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + d.y + "," + d.x + ")";
+                });
+
+            nodeUpdate.select('circle.node')
+                .attr('r', 10)
+                .style("fill", function(d) {
+                    return d._children ? "lightsteelblue" : "#fff";
+                })
+                .attr('cursor', 'pointer');
+
+            var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function(d) {
+                    return "translate(" + source.y + "," + source.x + ")";
+                })
+                .remove();
+
+            nodeExit.select('circle')
+                .attr('r', 1e-6);
+
+            nodeExit.select('text')
+                .style('fill-opacity', 1e-6);
+
+            var link = svg.selectAll('path.link')
+                .data(links, function(d) { return d.id; });
+
+            var linkEnter = link.enter().insert('path', "g")
+                .attr("class", "link")
+                .attr('d', function(d){
+                    var o = {x: source.x0, y: source.y0};
+                    return diagonal(o, o);
+                });
+
+            var linkUpdate = linkEnter.merge(link);
+
+            linkUpdate.transition()
+                .duration(duration)
+                .attr('d', function(d){ return diagonal(d, d.parent); });
+
+            var linkExit = link.exit().transition()
+                .duration(duration)
+                .attr('d', function(d) {
+                    var o = {x: source.x, y: source.y};
+                    return diagonal(o, o);
+                })
+                .remove();
+
+            nodes.forEach(function(d){
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+
+            function diagonal(s, d) {
+                var path = `M ${s.y} ${s.x}
+                          C ${(s.y + d.y) / 2} ${s.x},
+                            ${(s.y + d.y) / 2} ${d.x},
+                            ${d.y} ${d.x}`;
+                return path;
+            }
+
+            function click(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
+            }
+        }
+    </script>
+</body>
+</html>
