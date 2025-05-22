@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO FUNK YOURSELF v2.2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Arial+Black&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-purple: #f0f; /* Magenta */
+            --secondary-yellow: #ff0; /* Gult */
+            --accent-cyan: #0ff;   /* Cyan */
+            --dark-bg: #000;
+            --deep-purple-bg: #220044;
+        }
+
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: var(--dark-bg);
+            color: var(--primary-purple);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--deep-purple-bg) 25%, var(--dark-bg) 25%, var(--dark-bg) 50%, var(--deep-purple-bg) 50%, var(--deep-purple-bg) 75%, var(--dark-bg) 75%, var(--dark-bg) 100%);
+            background-size: 80px 80px;
+            animation: animateBackground 20s linear infinite, subtleHueShift 30s infinite alternate;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes animateBackground {
+            0% { background-position: 0 0; }
+            100% { background-position: 160px 0; }
+        }
+
+        @keyframes subtleHueShift {
+            0% { filter: hue-rotate(0deg) brightness(1); }
+            50% { filter: hue-rotate(20deg) brightness(1.1); }
+            100% { filter: hue-rotate(0deg) brightness(1); }
+        }
+
+        .funky-header {
+            padding: 1rem;
+            text-shadow: 0 0 10px var(--secondary-yellow), 0 0 20px var(--primary-purple);
+            position: relative;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: 'Monoton', cursive;
+            font-size: clamp(3rem, 10vw, 6rem);
+            margin: 0;
+            color: var(--secondary-yellow);
+            animation: glow 1.5s infinite alternate;
+        }
+
+        .tagline {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: var(--primary-purple);
+            margin-top: 0.5rem;
+            text-shadow: 1px 1px 3px var(--dark-bg);
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px var(--secondary-yellow); opacity: 0.9; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px var(--secondary-yellow), 0 0 40px var(--primary-purple); opacity: 1; }
+        }
+
+        .funky-img {
+            border: 8px dashed var(--secondary-yellow);
+            border-radius: 50%;
+            width: clamp(150px, 30vw, 200px);
+            height: clamp(150px, 30vw, 200px);
+            object-fit: cover;
+            margin: 1.5rem auto;
+            box-shadow: 0 0 25px var(--primary-purple);
+            transition: transform 0.5s ease-in-out;
+        }
+        .funky-img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .controls-container {
+            margin: 1rem 0;
+        }
+
+        .funky-btn {
+            background: var(--primary-purple);
+            color: var(--dark-bg);
+            border: 3px solid var(--secondary-yellow);
+            padding: 12px 25px;
+            font-size: clamp(1.2rem, 4vw, 1.6rem);
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.3s;
+            font-family: 'Arial Black', sans-serif;
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        .funky-btn:hover {
+            background: var(--secondary-yellow);
+            color: var(--primary-purple);
+            transform: scale(1.15) rotate(-3deg);
+            box-shadow: 0 0 15px var(--primary-purple);
+        }
+
+        .disco-ball-container {
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(60px, 15vw, 80px);
+            margin: 1rem auto;
+            position: relative;
+            animation: spin 4s linear infinite, sway 6s ease-in-out infinite alternate;
+        }
+         @keyframes sway {
+            0% { transform: translateX(-10px) rotate(-5deg); }
+            100% { transform: translateX(10px) rotate(5deg); }
+        }
+
+        .disco-ball-css {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, #ccc 40%, #777 60%, #333);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 
+                        0 0 30px var(--accent-cyan),
+                        0 0 50px var(--primary-purple);
+            position: relative;
+            overflow: hidden;
+        }
+        .disco-ball-css::before, .disco-ball-css::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: repeating-conic-gradient(
+                from 0deg,
+                rgba(255,255,255,0.1) 0deg 5deg, 
+                transparent 5deg 10deg
+            );
+            animation: rotateFacets 10s linear infinite;
+        }
+        .disco-ball-css::after {
+             animation-direction: reverse;
+             animation-duration: 8s;
+        }
+        @keyframes rotateFacets {
+            to { transform: translate(-25%, -25%) rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform-origin: center top; }
+            100% { transform: rotate(360deg); }
+        }
+
+        .ufo-mail {
+            position: fixed;
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            color: var(--accent-cyan);
+            text-shadow: 0 0 8px var(--accent-cyan), 0 0 15px #fff;
+            animation: flyAroundComplex 25s infinite ease-in-out;
+            cursor: pointer;
+            z-index: 20;
+            padding: 5px 10px;
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        @keyframes flyAroundComplex {
+            0% { top: 80%; left: -15%; transform: rotate(0deg) scale(0.8); }
+            20% { top: 20%; left: 30%; transform: rotate(15deg) scale(1.1); }
+            40% { top: 50%; left: 100%; transform: rotate(-10deg) scale(0.9); }
+            60% { top: 10%; left: 60%; transform: rotate(25deg) scale(1.2); }
+            80% { top: 70%; left: -10%; transform: rotate(-20deg) scale(1); }
+            100% { top: 80%; left: -15%; transform: rotate(0deg) scale(0.8); }
+        }
+
+        .good-vibes {
+            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+            margin-top: 2rem;
+            animation: rainbowBlink 4s linear infinite;
+            position: relative;
+            z-index: 5;
+        }
+        @keyframes rainbowBlink {
+            0% { color: #ff0000; opacity: 1; transform: scale(1); }
+            14% { color: #ff7f00; }
+            28% { color: #ffff00; }
+            42% { color: #00ff00; transform: scale(1.05); }
+            56% { color: #0000ff; }
+            70% { color: #4b0082; }
+            84% { color: #9400d3; transform: scale(0.95); }
+            100% { color: #ff0000; opacity: 0.8; transform: scale(1); }
+        }
+
+        /* NY CSS FÖR BILDERNA LÄNGST NER */
+        .bottom-image-container {
+            position: fixed;
+            bottom: 15px; /* Avstånd från botten */
+            width: 100%;
+            display: flex;
+            justify-content: space-between; /* Fördelar bilderna */
+            padding: 0 15px; /* Avstånd från sidorna */
+            z-index: 15; /* Ovanför bakgrund, under ev. översta lager */
+            pointer-events: none; /* Så containern inte blockerar klick under */
+        }
+
+        .bottom-image-link {
+            pointer-events: auto; /* Gör länkarna klickbara */
+            display: inline-block; /* För transform */
+            transition: transform 0.3s ease;
+        }
+        .bottom-image-link:hover {
+            transform: scale(1.15) rotate(3deg);
+        }
+
+        .bottom-image-link img {
+            width: clamp(60px, 10vw, 90px); /* Responsiv storlek */
+            height: auto;
+            border-radius: 10px; /* Lite rundade hörn */
+            border: 3px solid var(--accent-cyan);
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="funky-header">
+        <h1>GO FUNK YOURSELF</h1>
+        <p class="tagline">📸 Fotografering | 🎸 Funk</p>
+
+        <div class="disco-ball-container">
+            <div class="disco-ball-css"></div>
+        </div>
+
+        <!-- KOM IHÅG ATT BYTA DENNA BILD! -->
+        <img src="https://placekitten.com/300/300" alt="Funky You" class="funky-img">
+        
+        <div class="controls-container">
+            <button class="funky-btn" id="funkBtn">PLAY THE FUNK!</button>
+        </div>
+    </div>
+
+    <div class="ufo-mail" id="ufoMail" onclick="sendEmail()" title="Maila mig!">🛸 Stefan.Askman@GoFunkYourSelf.Online</div>
+
+    <div class="good-vibes">"...good things happen to good people!"</div>
+
+    <!-- NY HTML FÖR BILDERNA LÄNGST NER -->
+    <div class="bottom-image-container">
+        <a href="https://www.folkuniversitetet.se/vara-skolor/folkhogskolor/sodra-folkhogskolan-helsingborg/" target="_blank" rel="noopener noreferrer" class="bottom-image-link" title="Södra Folkhögskolan Helsingborg">
+            <img src="images/stefansodra.png" alt="Stefan Södra Folkhögskolan">
+        </a>
+        <a href="https://helsingborgsmedborgarmedalj.wordpress.com/informationspapekande/" target="_blank" rel="noopener noreferrer" class="bottom-image-link" title="Helsingborgs Medborgarmedalj">
+            <img src="images/medaljen.png" alt="Helsingborgs Medborgarmedalj">
+        </a>
+    </div>
+
+    <!-- Ljudfil (kom ihåg att byta namn eller fil) -->
+    <audio id="funkAudio" loop>
+        <source src="funked-up.mp3" type="audio/mpeg"> {/* ÄNDRAT FILNAMN HÄR */}
+        Din webbläsare stödjer inte ljudelementet.
+    </audio>
+
+    <script>
+        const funkAudio = document.getElementById('funkAudio');
+        const funkBtn = document.getElementById('funkBtn');
+        let isPlaying = false;
+
+        if (funkAudio) {
+            funkAudio.volume = 0.5; 
+        }
+
+        function toggleFunk() {
+            if (!funkAudio) {
+                console.error("Ljudelementet hittades inte!");
+                return;
+            }
+
+            if (isPlaying) {
+                funkAudio.pause();
+                isPlaying = false;
+                funkBtn.textContent = "PLAY THE FUNK!";
+                funkBtn.style.background = "var(--primary-purple)";
+            } else {
+                funkAudio.play().then(() => {
+                    isPlaying = true;
+                    funkBtn.textContent = "STOP THE FUNK!";
+                    funkBtn.style.background = "var(--secondary-yellow)";
+                }).catch(error => {
+                    console.error("Kunde inte starta ljud:", error);
+                    isPlaying = false; 
+                    funkBtn.textContent = "PLAY THE FUNK!"; 
+                    funkBtn.style.background = "var(--primary-purple)";
+                });
+            }
+        }
+
+        funkBtn.addEventListener('click', toggleFunk);
+
+        function sendEmail() {
+            window.location.href = "mailto:Stefan.Askman@GoFunkYourSelf.Online";
+        }
+    </script>
+</body>
+</html>
