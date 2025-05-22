@@ -3,305 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GO FUNK YOURSELF v2.2</title>
-    <link href="https://fonts.googleapis.com/css2?family=Monoton&family=Arial+Black&display=swap" rel="stylesheet">
+    <title>Logotomia Style Navigator</title>
     <style>
-        :root {
-            --primary-purple: #f0f; /* Magenta */
-            --secondary-yellow: #ff0; /* Gult */
-            --accent-cyan: #0ff;   /* Cyan */
-            --dark-bg: #000;
-            --deep-purple-bg: #220044;
+        body {
+            margin: 0;
+            background-color: #000000;
+            color: #ccc;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden;
         }
 
-        body {
-            font-family: 'Arial Black', sans-serif;
-            background: var(--dark-bg);
-            color: var(--primary-purple);
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--deep-purple-bg) 25%, var(--dark-bg) 25%, var(--dark-bg) 50%, var(--deep-purple-bg) 50%, var(--deep-purple-bg) 75%, var(--dark-bg) 75%, var(--dark-bg) 100%);
-            background-size: 80px 80px;
-            animation: animateBackground 20s linear infinite, subtleHueShift 30s infinite alternate;
-            text-align: center;
+        #page-container {
+            display: flex;
+            width: 300vw;
+            height: 100vh;
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform: translateX(-100vw);
+        }
+
+        .page {
+            width: 100vw;
+            min-width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-        }
-
-        @keyframes animateBackground {
-            0% { background-position: 0 0; }
-            100% { background-position: 160px 0; }
-        }
-
-        @keyframes subtleHueShift {
-            0% { filter: hue-rotate(0deg) brightness(1); }
-            50% { filter: hue-rotate(20deg) brightness(1.1); }
-            100% { filter: hue-rotate(0deg) brightness(1); }
-        }
-
-        .funky-header {
-            padding: 1rem;
-            text-shadow: 0 0 10px var(--secondary-yellow), 0 0 20px var(--primary-purple);
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 {
-            font-family: 'Monoton', cursive;
-            font-size: clamp(3rem, 10vw, 6rem);
-            margin: 0;
-            color: var(--secondary-yellow);
-            animation: glow 1.5s infinite alternate;
-        }
-
-        .tagline {
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            color: var(--primary-purple);
-            margin-top: 0.5rem;
-            text-shadow: 1px 1px 3px var(--dark-bg);
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 5px #fff, 0 0 10px var(--secondary-yellow); opacity: 0.9; }
-            to { text-shadow: 0 0 20px #fff, 0 0 30px var(--secondary-yellow), 0 0 40px var(--primary-purple); opacity: 1; }
-        }
-
-        .funky-img {
-            border: 8px dashed var(--secondary-yellow);
-            border-radius: 50%;
-            width: clamp(150px, 30vw, 200px);
-            height: clamp(150px, 30vw, 200px);
-            object-fit: cover;
-            margin: 1.5rem auto;
-            box-shadow: 0 0 25px var(--primary-purple);
-            transition: transform 0.5s ease-in-out;
-        }
-        .funky-img:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .controls-container {
-            margin: 1rem 0;
-        }
-
-        .funky-btn {
-            background: var(--primary-purple);
-            color: var(--dark-bg);
-            border: 3px solid var(--secondary-yellow);
-            padding: 12px 25px;
-            font-size: clamp(1.2rem, 4vw, 1.6rem);
-            cursor: pointer;
-            margin: 0.5rem;
-            transition: all 0.3s;
-            font-family: 'Arial Black', sans-serif;
-            border-radius: 5px;
-            text-transform: uppercase;
-        }
-
-        .funky-btn:hover {
-            background: var(--secondary-yellow);
-            color: var(--primary-purple);
-            transform: scale(1.15) rotate(-3deg);
-            box-shadow: 0 0 15px var(--primary-purple);
-        }
-
-        .disco-ball-container {
-            width: clamp(60px, 15vw, 80px);
-            height: clamp(60px, 15vw, 80px);
-            margin: 1rem auto;
-            position: relative;
-            animation: spin 4s linear infinite, sway 6s ease-in-out infinite alternate;
-        }
-         @keyframes sway {
-            0% { transform: translateX(-10px) rotate(-5deg); }
-            100% { transform: translateX(10px) rotate(5deg); }
-        }
-
-        .disco-ball-css {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff, #ccc 40%, #777 60%, #333);
-            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), 
-                        0 0 30px var(--accent-cyan),
-                        0 0 50px var(--primary-purple);
+            justify-content: center;
+            text-align: center;
             position: relative;
             overflow: hidden;
         }
-        .disco-ball-css::before, .disco-ball-css::after {
-            content: '';
+
+        canvas#particleCanvas {
+            display: block;
             position: absolute;
-            width: 150%;
-            height: 150%;
-            background: repeating-conic-gradient(
-                from 0deg,
-                rgba(255,255,255,0.1) 0deg 5deg, 
-                transparent 5deg 10deg
-            );
-            animation: rotateFacets 10s linear infinite;
-        }
-        .disco-ball-css::after {
-             animation-direction: reverse;
-             animation-duration: 8s;
-        }
-        @keyframes rotateFacets {
-            to { transform: translate(-25%, -25%) rotate(360deg); }
-        }
-        @keyframes spin {
-            0% { transform-origin: center top; }
-            100% { transform: rotate(360deg); }
+            top: 0;
+            left: 0;
+            width: 100% !important;
+            height: 100% !important;
+            z-index: 1;
         }
 
-        .ufo-mail {
-            position: fixed;
-            font-size: clamp(1rem, 2.5vw, 1.3rem);
-            color: var(--accent-cyan);
-            text-shadow: 0 0 8px var(--accent-cyan), 0 0 15px #fff;
-            animation: flyAroundComplex 25s infinite ease-in-out;
-            cursor: pointer;
-            z-index: 20;
-            padding: 5px 10px;
-            background-color: rgba(0,0,0,0.3);
-            border-radius: 10px;
-        }
-        @keyframes flyAroundComplex {
-            0% { top: 80%; left: -15%; transform: rotate(0deg) scale(0.8); }
-            20% { top: 20%; left: 30%; transform: rotate(15deg) scale(1.1); }
-            40% { top: 50%; left: 100%; transform: rotate(-10deg) scale(0.9); }
-            60% { top: 10%; left: 60%; transform: rotate(25deg) scale(1.2); }
-            80% { top: 70%; left: -10%; transform: rotate(-20deg) scale(1); }
-            100% { top: 80%; left: -15%; transform: rotate(0deg) scale(0.8); }
-        }
-
-        .good-vibes {
-            font-size: clamp(1.2rem, 3.5vw, 1.8rem);
-            margin-top: 2rem;
-            animation: rainbowBlink 4s linear infinite;
+        #navigation-overlay {
             position: relative;
-            z-index: 5;
-        }
-        @keyframes rainbowBlink {
-            0% { color: #ff0000; opacity: 1; transform: scale(1); }
-            14% { color: #ff7f00; }
-            28% { color: #ffff00; }
-            42% { color: #00ff00; transform: scale(1.05); }
-            56% { color: #0000ff; }
-            70% { color: #4b0082; }
-            84% { color: #9400d3; transform: scale(0.95); }
-            100% { color: #ff0000; opacity: 0.8; transform: scale(1); }
-        }
-
-        /* NY CSS FÖR BILDERNA LÄNGST NER */
-        .bottom-image-container {
-            position: fixed;
-            bottom: 15px; /* Avstånd från botten */
-            width: 100%;
             display: flex;
-            justify-content: space-between; /* Fördelar bilderna */
-            padding: 0 15px; /* Avstånd från sidorna */
-            z-index: 15; /* Ovanför bakgrund, under ev. översta lager */
-            pointer-events: none; /* Så containern inte blockerar klick under */
+            justify-content: space-between;
+            align-items: center;
+            width: 70vw;
+            max-width: 900px;
+            z-index: 2;
+            pointer-events: none;
         }
 
-        .bottom-image-link {
-            pointer-events: auto; /* Gör länkarna klickbara */
-            display: inline-block; /* För transform */
-            transition: transform 0.3s ease;
+        .nav-element {
+            font-size: 1.5em;
+            color: #666; /* Darkened nav elements */
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 20px;
+            pointer-events: auto;
+            transition: color 0.3s ease, transform 0.2s ease;
         }
-        .bottom-image-link:hover {
-            transform: scale(1.15) rotate(3deg);
+        .nav-element:hover {
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .nav-element .label {
+            margin: 0 15px;
+            user-select: none;
+            display: inline-block;
+            /* No specific color here, inherits from .nav-element */
+        }
+        .nav-element .arrow {
+            font-size: 1.2em;
         }
 
-        .bottom-image-link img {
-            width: clamp(60px, 10vw, 90px); /* Responsiv storlek */
-            height: auto;
-            border-radius: 10px; /* Lite rundade hörn */
-            border: 3px solid var(--accent-cyan);
-            box-shadow: 0 0 15px var(--accent-cyan);
+        /* Styling för innehållssidorna (Art och Projects) */
+        .content-page {
+            background-image: url('input_file_0.jpg'); /* Bakgrundsbilden */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            position: relative; /* Nödvändig för ::before positionering */
+        }
+
+        /* Overlay för pulserande effekt */
+        .content-page::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); /* Mörk overlay, start-opacitet */
+            animation: pulseBackgroundOverlay 3s ease-in-out infinite;
+            z-index: 0; /* Bakom innehållet */
+        }
+
+        @keyframes pulseBackgroundOverlay {
+            0%, 100% {
+                background-color: rgba(0, 0, 0, 0.85); /* Mörkare */
+            }
+            50% {
+                background-color: rgba(0, 0, 0, 0.65); /* Lite ljusare, bilden syns mer */
+            }
+        }
+
+        .content-page h1,
+        .content-page p,
+        .content-page a.back-button {
+            position: relative; /* För att hamna ovanpå ::before-elementet */
+            z-index: 1; /* Ovanpå overlayen */
+        }
+
+        .content-page h1 {
+            font-size: 3em;
+            color: #cdcdcd;
+            margin-bottom: 20px;
+             text-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+        }
+        .content-page p {
+            font-size: 1.2em;
+            max-width: 600px;
+            line-height: 1.6;
+            color: #a0a0a0;
+            text-shadow: 0px 0px 5px rgba(0,0,0,0.7);
+        }
+        .content-page a.back-button {
+            margin-top: 80px; /* Moved back button down */
+            padding: 12px 24px;
+            color: #eee;
+            background-color: #282828;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            border: 1px solid #444;
+        }
+        .content-page a.back-button:hover {
+            background-color: #3a3a3a;
+            transform: translateY(-2px);
+        }
+
+        .top-ui, .bottom-ui {
+            position: fixed;
+            width: calc(100% - 40px);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+            color: #777;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .top-ui { top: 0; left:0; }
+        .bottom-ui { bottom: 0; left:0; }
+        .top-ui > div, .bottom-ui > div { pointer-events: auto; }
+
+        .logotomia-brand {
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .plus-icon { font-size: 1.8em; color: #fff;}
+
+        #animated-header-text {
+            display: inline-block;
+            animation: colorChange 10s infinite alternate, moveRight 20s infinite alternate linear;
+            position: relative;
+        }
+
+        @keyframes colorChange {
+            0%   { color: #f0f0f0; }
+            20%  { color: #ffadad; }
+            40%  { color: #ffd6a5; }
+            60%  { color: #fdffb6; }
+            80%  { color: #caffbf; }
+            100% { color: #9bf6ff; }
+        }
+
+        @keyframes moveRight {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(30px); }
+        }
+
+        .nav-element.left-nav .label {
+            animation-name: moveNavLeft;
+            animation-duration: 15s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-timing-function: linear;
+        }
+
+        .nav-element.right-nav .label {
+            animation-name: moveNavRight;
+            animation-duration: 15s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-timing-function: linear;
+        }
+
+        @keyframes moveNavLeft {
+            from { transform: translateX(0px); }
+            to   { transform: translateX(-15px); }
+        }
+
+        @keyframes moveNavRight {
+            from { transform: translateX(0px); }
+            to   { transform: translateX(15px); }
         }
 
     </style>
 </head>
 <body>
-    <div class="funky-header">
-        <h1>GO FUNK YOURSELF</h1>
-        <p class="tagline">📸 Fotografering | 🎸 Funk | AI |</p>
+    <div class="top-ui">
+        <div>
+             <span id="animated-header-text">
+                <span class="logotomia-brand">Go Funk Yourself</span> &rarr; Portfolio of Stefan Askman
+             </span>
+        </div>
+        <div class="plus-icon">+</div>
+    </div>
 
-        <div class="disco-ball-container">
-            <div class="disco-ball-css"></div>
+    <div id="page-container">
+        <div class="page content-page" id="art-page">
+            <h1>Art and Experimentation</h1>
+            <p>Exploring the boundaries of artificial creativity. This section showcases various artistic endeavors and experimental projects.</p>
+            <a href="#" class="back-button" data-targetpage="1">Back to Home</a>
         </div>
 
-        <!-- KOM IHÅG ATT BYTA DENNA BILD! -->
-        <img src="https://placekitten.com/300/300" alt="Funky You" class="funky-img">
-        
-        <div class="controls-container">
-            <button class="funky-btn" id="funkBtn">PLAY THE FUNK!</button>
+        <div class="page" id="home-page">
+            <canvas id="particleCanvas"></canvas>
+            <div id="navigation-overlay">
+                <div class="nav-element left-nav" data-targetpage="0">
+                    <span class="arrow">&larr;</span>
+                    <span class="label">Art and Experimentation</span>
+                </div>
+                <div class="nav-element right-nav" data-targetpage="2">
+                    <span class="label">Professional Projects</span>
+                    <span class="arrow">&rarr;</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page content-page" id="projects-page">
+            <h1>Professional Projects</h1>
+            <p>Selected professional works, demonstrating skills and experience in various domains of A.I. development.</p>
+             <a href="#" class="back-button" data-targetpage="1">Back to Home</a>
         </div>
     </div>
 
-    <div class="ufo-mail" id="ufoMail" onclick="sendEmail()" title="Maila mig!">🛸 Stefan.Askman@GoFunkYourSelf.Online</div>
-
-    <div class="good-vibes">"...Jazz is the teacher, Funk is the preacher...."</div>
-
-    <!-- NY HTML FÖR BILDERNA LÄNGST NER -->
-    <div class="bottom-image-container">
-        <a href="https://www.folkuniversitetet.se/vara-skolor/folkhogskolor/sodra-folkhogskolan-helsingborg/" target="_blank" rel="noopener noreferrer" class="bottom-image-link" title="Södra Folkhögskolan Helsingborg">
-            <img src="images/stefansodra.png" alt="Stefan Södra Folkhögskolan">
-        </a>
-        <a href="https://helsingborgsmedborgarmedalj.wordpress.com/informationspapekande/" target="_blank" rel="noopener noreferrer" class="bottom-image-link" title="Helsingborgs Medborgarmedalj">
-            <img src="images/medaljen.png" alt="Helsingborgs Medborgarmedalj">
-        </a>
+    <div class="bottom-ui">
+        <div>
+            <div>56&deg; 2' 39.93" N</div>
+            <div>12&deg; 42' 35.33" E</div>
+        </div>
+        <div>
+            <div>Nominee</div>
+            <div>W.</div>
+        </div>
+        <div>
+            <div>V. 4-</div>
+            <div>2025</div>
+        </div>
     </div>
 
-    <!-- Ljudfil (kom ihåg att byta namn eller fil) -->
-    <audio id="funkAudio" loop>
-        <source src="funked-up.mp3" type="audio/mpeg"> {/* ÄNDRAT FILNAMN HÄR */}
-        Din webbläsare stödjer inte ljudelementet.
-    </audio>
+    <!-- Ljudfil för hjärtslag -->
+    <audio id="heartbeatSound" src="heartbeat.mp3" preload="auto"></audio>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        const funkAudio = document.getElementById('funkAudio');
-        const funkBtn = document.getElementById('funkBtn');
-        let isPlaying = false;
+        let scene, camera, renderer, particleSystem;
+        const particleCount = 30000;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
 
-        if (funkAudio) {
-            funkAudio.volume = 0.5; 
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        const sphereRadius = 60;
+        const threeCanvas = document.getElementById('particleCanvas');
+
+        // Ljud-element
+        const heartbeatSound = document.getElementById('heartbeatSound');
+        if (heartbeatSound) { // Ställ in volymen om elementet finns
+            heartbeatSound.volume = 0.15;
         }
 
-        function toggleFunk() {
-            if (!funkAudio) {
-                console.error("Ljudelementet hittades inte!");
-                return;
+
+        function initThree() {
+            scene = new THREE.Scene();
+            const homePageElement = document.getElementById('home-page');
+            camera = new THREE.PerspectiveCamera(75, homePageElement.clientWidth / homePageElement.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true });
+            renderer.setSize(homePageElement.clientWidth, homePageElement.clientHeight);
+            renderer.setClearColor(0x000000, 0);
+            camera.position.z = 120;
+        }
+
+        function createParticles() {
+            const baseColor = new THREE.Color(0xffffff);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const u = Math.random(); const v = Math.random();
+                const theta = 2 * Math.PI * u; const phi = Math.acos(2 * v - 1);
+                const r = sphereRadius * Math.cbrt(Math.random() * 0.8 + 0.2);
+                positions[i3]     = r * Math.sin(phi) * Math.cos(theta);
+                positions[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i3 + 2] = r * Math.cos(phi);
+                const lightnessVariance = Math.random() * 0.4 + 0.6;
+                colors[i3]     = baseColor.r * lightnessVariance;
+                colors[i3 + 1] = baseColor.g * lightnessVariance;
+                colors[i3 + 2] = baseColor.b * lightnessVariance;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05, vertexColors: true, transparent: true,
+                opacity: 0.3, blending: THREE.AdditiveBlending, sizeAttenuation: true
+            });
+            particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particleSystem);
+        }
+
+        function setupMouseListeners() {
+            document.addEventListener('mousemove', (event) => {
+                if (currentPageIndex === 1) {
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                }
+            });
+        }
+
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+            targetRotationY = mouseX * 0.25;
+            targetRotationX = mouseY * 0.25;
+            if (particleSystem) {
+                particleSystem.rotation.y += (targetRotationY - particleSystem.rotation.y) * 0.05;
+                particleSystem.rotation.x += (targetRotationX - particleSystem.rotation.x) * 0.05;
+            }
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            const homePageElement = document.getElementById('home-page');
+            if (homePageElement && camera && renderer) {
+                 camera.aspect = homePageElement.clientWidth / homePageElement.clientHeight;
+                 camera.updateProjectionMatrix();
+                 renderer.setSize(homePageElement.clientWidth, homePageElement.clientHeight);
+            }
+        }
+        window.addEventListener('resize', onWindowResize);
+
+        const pageContainer = document.getElementById('page-container');
+        const navElements = document.querySelectorAll('.nav-element');
+        const backButtons = document.querySelectorAll('.back-button');
+        let currentPageIndex = 1;
+
+        function goToPage(pageIndex) {
+            pageIndex = parseInt(pageIndex);
+            if (isNaN(pageIndex) || pageIndex < 0 || pageIndex > 2) return;
+
+            pageContainer.style.transform = `translateX(-${pageIndex * 100}vw)`;
+            currentPageIndex = pageIndex;
+
+            if (currentPageIndex !== 1) { // Om vi inte är på home-sidan
+                mouseX = 0;
+                mouseY = 0;
+                if (heartbeatSound) {
+                    heartbeatSound.currentTime = 0; // Spola tillbaka
+                    heartbeatSound.play().catch(error => {
+                        console.warn("Audio autoplay was prevented by the browser:", error);
+                        // Användaren kan behöva interagera med sidan först
+                    });
+                }
+            } else { // Om vi är på home-sidan
+                if (heartbeatSound) {
+                    heartbeatSound.pause();
+                    heartbeatSound.currentTime = 0; // Återställ för nästa gång
+                }
             }
 
-            if (isPlaying) {
-                funkAudio.pause();
-                isPlaying = false;
-                funkBtn.textContent = "PLAY THE FUNK!";
-                funkBtn.style.background = "var(--primary-purple)";
-            } else {
-                funkAudio.play().then(() => {
-                    isPlaying = true;
-                    funkBtn.textContent = "STOP THE FUNK!";
-                    funkBtn.style.background = "var(--secondary-yellow)";
-                }).catch(error => {
-                    console.error("Kunde inte starta ljud:", error);
-                    isPlaying = false; 
-                    funkBtn.textContent = "PLAY THE FUNK!"; 
-                    funkBtn.style.background = "var(--primary-purple)";
-                });
+            const leftNav = document.querySelector('.nav-element.left-nav');
+            const rightNav = document.querySelector('.nav-element.right-nav');
+
+            if (leftNav) {
+                leftNav.style.visibility = (currentPageIndex === 0) ? 'hidden' : 'visible';
+            }
+            if (rightNav) {
+                rightNav.style.visibility = (currentPageIndex === 2) ? 'hidden' : 'visible';
             }
         }
 
-        funkBtn.addEventListener('click', toggleFunk);
 
-        function sendEmail() {
-            window.location.href = "mailto:Stefan.Askman@GoFunkYourSelf.Online";
-        }
+        navElements.forEach(nav => {
+            nav.addEventListener('click', (e) => {
+                const targetPageIndex = e.currentTarget.dataset.targetpage;
+                goToPage(targetPageIndex);
+            });
+        });
+
+        backButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPageIndex = e.currentTarget.dataset.targetpage;
+                goToPage(targetPageIndex);
+            })
+        })
+
+        initThree();
+        createParticles();
+        setupMouseListeners();
+        animateThreeJS();
+        goToPage(1); // Gå till startsidan (index 1) vid laddning
+
     </script>
 </body>
 </html>
