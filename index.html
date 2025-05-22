@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GO FUNK YOURSELF</title>
+    <style>
+        body {
+            font-family: 'Arial Black', sans-serif;
+            background: #000;
+            color: #f0f;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-image: radial-gradient(circle, #220044, #000);
+            text-align: center;
+            height: 100vh;
+        }
+        .funky-header {
+            padding: 2rem;
+            text-shadow: 0 0 10px #ff0, 0 0 20px #f0f;
+            position: relative;
+            z-index: 10;
+        }
+        h1 {
+            font-size: 5rem;
+            margin: 0;
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #fff, 0 0 10px #ff0; }
+            to { text-shadow: 0 0 20px #fff, 0 0 30px #ff0, 0 0 40px #f0f; }
+        }
+        .funky-img {
+            border: 10px dashed #ff0;
+            border-radius: 50%;
+            width: 220px;
+            height: 220px;
+            object-fit: cover;
+            margin: 2rem;
+        }
+        .funky-btn {
+            background: #f0f;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.8rem;
+            cursor: pointer;
+            margin: 2rem;
+            transition: all 0.3s;
+        }
+        .funky-btn:hover {
+            background: #ff0;
+            transform: scale(1.2);
+        }
+        .disco-ball {
+            font-size: 5rem;
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* UFO-mail (slower + clickable) */
+        .ufo-mail {
+            position: absolute;
+            font-size: 1.5rem;
+            color: #0ff;
+            text-shadow: 0 0 5px #0ff;
+            animation: flyAround 30s linear infinite;
+            cursor: pointer;
+            z-index: 20;
+        }
+        @keyframes flyAround {
+            0% { top: 10%; left: -10%; transform: rotate(0deg); }
+            50% { top: 80%; left: 110%; transform: rotate(180deg); }
+            100% { top: 10%; left: -10%; transform: rotate(360deg); }
+        }
+        /* Rainbow-blinking text */
+        .good-vibes {
+            font-size: 2rem;
+            margin-top: 3rem;
+            animation: rainbowBlink 4s linear infinite;
+        }
+        @keyframes rainbowBlink {
+            0% { color: #ff0000; opacity: 1; }
+            14% { color: #ff7f00; }
+            28% { color: #ffff00; }
+            42% { color: #00ff00; }
+            56% { color: #0000ff; }
+            70% { color: #4b0082; }
+            84% { color: #9400d3; }
+            100% { color: #ff0000; opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <div class="funky-header">
+        <h1>GO FUNK YOURSELF</h1>
+        <p>📸 Fotografering | 🎸 Funk</p>
+        <div class="disco-ball">🪩</div>
+        <img src="https://placekitten.com/300/300" alt="Funky You" class="funky-img">
+        <br>
+        <button class="funky-btn" onclick="startFunk()">PLAY THE FUNK!</button>
+    </div>
+
+    <!-- Clickable UFO-mail -->
+    <div class="ufo-mail" id="ufoMail" onclick="sendEmail()">🛸 mr.askman@gmail.com</div>
+
+    <!-- Rainbow text -->
+    <div class="good-vibes">"...good things happen to good people!"</div>
+
+    <!-- Fixed audio -->
+    <script>
+        // Nightrider synth
+        let audioCtx, synth, gain;
+        const nightriderNotes = [60, 62, 64, 65, 67, 69, 71, 69, 67, 65, 64, 62];
+        let isPlaying = false;
+
+        function startFunk() {
+            if (isPlaying) return;
+            isPlaying = true;
+            
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            synth = audioCtx.createOscillator();
+            gain = audioCtx.createGain();
+            gain.gain.value = 0.1;
+            
+            synth.type = "sawtooth";
+            synth.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            let step = 0;
+            synth.start();
+            
+            setInterval(() => {
+                const note = nightriderNotes[step % nightriderNotes.length];
+                synth.frequency.setValueAtTime(
+                    midiToFreq(note), 
+                    audioCtx.currentTime
+                );
+                step++;
+            }, 150);
+        }
+
+        function midiToFreq(note) {
+            return 440 * Math.pow(2, (note - 69) / 12);
+        }
+
+        // Clickable email
+        function sendEmail() {
+            window.location.href = "mailto:mr.askman@gmail.com";
+        }
+
+        // Auto-start music (delayed)
+        setTimeout(() => {
+            startFunk();
+        }, 1000);
+    </script>
+</body>
+</html>
