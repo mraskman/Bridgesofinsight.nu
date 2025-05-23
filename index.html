@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logotomia Style Navigator - Stabil Bas</title>
+    <meta name="description" content="Stefan Askmans portfolio som visar konst, experiment och professionella AI-projekt, med en interaktiv Three.js-partikelanimation.">
+    <meta name="keywords" content="Stefan Askman, portfolio, AI, Three.js, konst, experiment, utvecklare, Logotomia">
+    <meta property="og:title" content="Logotomia Style Navigator - Stefan Askman Portfolio">
+    <meta property="og:description" content="Utforska Stefan Askmans kreativa och tekniska projekt.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://din-doman.se">
+    <meta property="og:image" content="https://din-doman.se/og-image.png">
+
+    <style>
+        :root {
+            --background-color-main: #000000;
+            --text-color-primary: #e0e0e0;
+            --text-color-secondary: #b0b0b0;
+            --text-color-muted: #888888;
+            --text-color-headings: #cdcdcd;
+            --accent-color-nav-hover: #ffffff;
+            --nav-element-color: #888888;
+            --button-bg-color: #282828;
+            --button-text-color: #eeeeee;
+            --button-border-color: #444444;
+            --button-hover-bg-color: #3a3a3a;
+            --focus-outline-color: #007bff;
+            --content-overlay-color: rgba(0, 0, 0, 0.80);
+        }
+
+        body { margin: 0; background-color: var(--background-color-main); color: var(--text-color-primary); font-family: 'Helvetica Neue', Arial, sans-serif; overflow: hidden; }
+        main#page-router { display: flex; width: 300vw; height: 100vh; transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55); transform: translateX(-100vw); }
+        section.page-section { width: 100vw; min-width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; overflow: hidden; outline: none; }
+        section.page-section:focus-visible { box-shadow: 0 0 0 3px var(--focus-outline-color) inset; }
+        canvas#particleCanvas { display: block; position: absolute; top: 0; left: 0; width: 100% !important; height: 100% !important; z-index: 1; }
+        nav#main-navigation { position: relative; display: flex; justify-content: space-between; align-items: center; width: 70vw; max-width: 900px; z-index: 2; pointer-events: none; }
+        
+        .nav-element { font-size: 1.5em; color: var(--nav-element-color); display: flex; align-items: center; cursor: pointer; padding: 20px; pointer-events: auto; transition: color 0.3s ease, transform 0.2s ease; }
+        .nav-element:hover { color: var(--accent-color-nav-hover); transform: scale(1.05); }
+        .nav-element:focus-visible { color: var(--accent-color-nav-hover); transform: scale(1.05); outline: 2px solid var(--focus-outline-color); outline-offset: 2px; border-radius: 4px; }
+        .nav-element .label { margin: 0 15px; user-select: none; display: inline-block; }
+        .nav-element .arrow { font-size: 1.2em; }
+
+        /* --- ÄNDRAD FILÄNDELSE FÖR BAKGRUNDSBILD --- */
+        section.content-page { background-image: url('input_file_0.jpg'); background-size: cover; background-position: center center; background-repeat: no-repeat; position: relative; }
+        section.content-page::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--content-overlay-color); animation: pulseBackgroundOverlay 3s ease-in-out infinite; z-index: 0; }
+        @keyframes pulseBackgroundOverlay { 0%, 100% { background-color: var(--content-overlay-color); } 50% { background-color: rgba(0, 0, 0, 0.60); } }
+        
+        section.content-page h1, section.content-page p, section.content-page a.back-button { position: relative; z-index: 1; }
+        section.content-page h1 { font-size: 3em; color: var(--text-color-headings); margin-bottom: 20px; text-shadow: 0px 0px 5px rgba(0,0,0,0.7); }
+        section.content-page p { font-size: 1.2em; max-width: 600px; line-height: 1.6; color: var(--text-color-secondary); text-shadow: 0px 0px 5px rgba(0,0,0,0.7); }
+        a.back-button { margin-top: 80px; padding: 12px 24px; color: var(--button-text-color); background-color: var(--button-bg-color); text-decoration: none; border-radius: 5px; transition: background-color 0.3s ease, transform 0.2s ease; border: 1px solid var(--button-border-color); display: inline-block; }
+        a.back-button:hover { background-color: var(--button-hover-bg-color); transform: translateY(-2px); }
+        a.back-button:focus-visible { background-color: var(--button-hover-bg-color); transform: translateY(-2px); outline: 2px solid var(--focus-outline-color); outline-offset: 2px; }
+        header.site-header, footer.site-footer { position: fixed; width: calc(100% - 40px); padding: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: var(--text-color-muted); z-index: 5; pointer-events: none; }
+        header.site-header { top: 0; left:0; }
+        footer.site-footer { bottom: 0; left:0; }
+        header.site-header > div, footer.site-footer > div { pointer-events: auto; }
+        footer.site-footer a { color: var(--text-color-muted); text-decoration: none; pointer-events: auto; }
+        footer.site-footer a:hover { color: var(--text-color-primary); }
+        footer.site-footer a:focus-visible { color: var(--text-color-primary); outline: 1px dashed var(--focus-outline-color); outline-offset: 2px; }
+        .logotomia-brand { font-weight: bold; font-size: 1.5em; }
+        .plus-icon { font-size: 1.8em; color: var(--accent-color-nav-hover); }
+
+        #animated-header-text {
+            display: inline-block;
+            animation: colorChange 10s infinite alternate, moveRight 20s infinite alternate linear;
+            position: relative;
+        }
+        @keyframes colorChange { 0%   { color: #f0f0f0; } 20%  { color: #ffadad; } 40%  { color: #ffd6a5; } 60%  { color: #fdffb6; } 80%  { color: #caffbf; } 100% { color: #9bf6ff; } }
+        @keyframes moveRight { 0%   { transform: translateX(0); } 100% { transform: translateX(30px); } }
+
+        .nav-element.left-nav .label { animation-name: moveNavLeft; animation-duration: 15s; animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: linear; }
+        .nav-element.right-nav .label { animation-name: moveNavRight; animation-duration: 15s; animation-iteration-count: infinite; animation-direction: alternate; animation-timing-function: linear; }
+        @keyframes moveNavLeft { from { transform: translateX(0px); } to { transform: translateX(-15px); } }
+        @keyframes moveNavRight { from { transform: translateX(0px); } to { transform: translateX(15px); } }
+        
+        footer.site-footer .bottom-ui-center-column { flex-grow: 1; text-align: center; }
+        .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+
+        /*
+        // @media (prefers-reduced-motion: reduce) ÄR TILLFÄLLIGT UTKOMMENTERAD
+        // FÖR ATT FELSÖKA CSS-ANIMATIONERNA.
+        // VI ÅTERAKTIVERAR DEN SENARE.
+        @media (prefers-reduced-motion: reduce) {
+            main#page-router { transition: none; }
+            section.content-page::before { animation: none !important; background-color: var(--content-overlay-color) !important; }
+            #animated-header-text, .nav-element .label { animation: none !important; }
+            #animated-header-text { transform: none !important; color: var(--text-color-primary) !important; }
+            .nav-element:hover, .nav-element:focus-visible { transform: none; }
+            a.back-button:hover, a.back-button:focus-visible { transform: none; }
+        }
+        */
+    </style>
+</head>
+<body>
+    <!-- HTML är oförändrad från din stabila version -->
+    <header class="site-header" role="banner">
+        <div><span id="animated-header-text"><span class="logotomia-brand">Go Funk Yourself</span> &rarr; Portfolio of Stefan Askman</span></div>
+        <div class="plus-icon" aria-hidden="true">+</div>
+    </header>
+    <main id="page-router" role="main">
+        <section class="page-section content-page" id="art-section">
+            <h1 id="art-heading">Art and Experimentation</h1>
+            <p>Exploring the boundaries of artificial creativity. This section showcases various artistic endeavors and experimental projects.</p>
+            <a href="#" class="back-button" data-targetpage="1">Back to Home</a>
+        </section>
+        <section class="page-section" id="home-section">
+            <canvas id="particleCanvas"></canvas>
+            <nav id="main-navigation" role="navigation" aria-label="Main site navigation">
+                <div class="nav-element left-nav" data-targetpage="0" tabindex="0">
+                    <span class="arrow">&larr;</span><span class="label">Art and Experimentation</span>
+                </div>
+                <div class="nav-element right-nav" data-targetpage="2" tabindex="0">
+                    <span class="label">Professional Projects</span><span class="arrow">&rarr;</span>
+                </div>
+            </nav>
+        </section>
+        <section class="page-section content-page" id="projects-section">
+            <h1 id="projects-heading">Professional Projects</h1>
+            <p>Selected professional works, demonstrating skills and experience in various domains of A.I. development.</p>
+             <a href="#" class="back-button" data-targetpage="1">Back to Home</a>
+        </section>
+    </main>
+    <footer class="site-footer" role="contentinfo">
+        <div><div>56&deg; 2' 39.93" N</div><div>12&deg; 42' 35.33" E</div></div>
+        <div class="bottom-ui-center-column"><div><a href="mailto:Stefan.Askman@GoFunkYourSelf.Online">Stefan.Askman@GoFunkYourSelf.Online</a></div></div>
+        <div><div>V. 4-</div><div>2025</div></div>
+    </footer>
+    <audio id="heartbeatSound" src="heartbeat.mp3" preload="auto"></audio>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // JavaScript är OFÖRÄNDRAD från din stabila version
+        let scene, camera, renderer, particleSystem;
+        const particleCount = 30000;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        let mouseX = 0, mouseY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
+        const sphereRadius = 60;
+        const threeCanvas = document.getElementById('particleCanvas');
+        const heartbeatSound = document.getElementById('heartbeatSound');
+        if (heartbeatSound) { heartbeatSound.volume = 0.15; }
+        function initThree() {
+            scene = new THREE.Scene();
+            const homePageElement = document.getElementById('home-section');
+            if (!homePageElement) { console.error("Home page element ('home-section') not found for Three.js canvas."); return; }
+            camera = new THREE.PerspectiveCamera(75, homePageElement.clientWidth / homePageElement.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true });
+            renderer.setSize(homePageElement.clientWidth, homePageElement.clientHeight);
+            renderer.setClearColor(0x000000, 0);
+            camera.position.z = 120;
+        }
+        function createParticles() {
+            const baseColor = new THREE.Color(0xffffff);
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                const u = Math.random(); const v = Math.random();
+                const theta = 2 * Math.PI * u; const phi = Math.acos(2 * v - 1);
+                const r = sphereRadius * Math.cbrt(Math.random() * 0.8 + 0.2);
+                positions[i3] = r * Math.sin(phi) * Math.cos(theta);
+                positions[i3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+                positions[i3 + 2] = r * Math.cos(phi);
+                const lightnessVariance = Math.random() * 0.4 + 0.6;
+                colors[i3] = baseColor.r * lightnessVariance;
+                colors[i3 + 1] = baseColor.g * lightnessVariance;
+                colors[i3 + 2] = baseColor.b * lightnessVariance;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            const particlesMaterial = new THREE.PointsMaterial({ size: 0.05, vertexColors: true, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+            particleSystem = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particleSystem);
+        }
+        function setupMouseListeners() {
+            document.addEventListener('mousemove', (event) => {
+                if (currentPageIndex === 1) {
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+                }
+            });
+        }
+        function animateThreeJS() {
+            requestAnimationFrame(animateThreeJS);
+            targetRotationY = mouseX * 0.25;
+            targetRotationX = mouseY * 0.25;
+            if (particleSystem) {
+                particleSystem.rotation.y += (targetRotationY - particleSystem.rotation.y) * 0.05;
+                particleSystem.rotation.x += (targetRotationX - particleSystem.rotation.x) * 0.05;
+            }
+            if (renderer && scene && camera) { renderer.render(scene, camera); }
+        }
+        function onWindowResize() {
+            const homePageElement = document.getElementById('home-section');
+            if (homePageElement && camera && renderer) {
+                 camera.aspect = homePageElement.clientWidth / homePageElement.clientHeight;
+                 camera.updateProjectionMatrix();
+                 renderer.setSize(homePageElement.clientWidth, homePageElement.clientHeight);
+            }
+        }
+        window.addEventListener('resize', onWindowResize);
+        const pageRouter = document.getElementById('page-router');
+        const navElements = document.querySelectorAll('.nav-element');
+        const backButtons = document.querySelectorAll('.back-button');
+        let currentPageIndex = 1;
+        function goToPage(pageIndex) {
+            pageIndex = parseInt(pageIndex);
+            if (isNaN(pageIndex) || pageIndex < 0 || pageIndex > 2) return;
+            if (!pageRouter) { console.error("Page router element ('page-router') not found."); return; }
+            pageRouter.style.transform = `translateX(-${pageIndex * 100}vw)`;
+            currentPageIndex = pageIndex;
+            if (currentPageIndex !== 1) {
+                mouseX = 0; mouseY = 0;
+                if (heartbeatSound) { heartbeatSound.currentTime = 0; heartbeatSound.play().catch(e => console.warn("Audio play interrupted or failed:",e)); }
+            } else {
+                if (heartbeatSound) { heartbeatSound.pause(); heartbeatSound.currentTime = 0; }
+            }
+            const leftNav = document.querySelector('.nav-element.left-nav');
+            const rightNav = document.querySelector('.nav-element.right-nav');
+            if (leftNav) leftNav.style.visibility = (currentPageIndex === 0) ? 'hidden' : 'visible';
+            if (rightNav) rightNav.style.visibility = (currentPageIndex === 2) ? 'hidden' : 'visible';
+        }
+        navElements.forEach(nav => {
+            nav.setAttribute('tabindex', '0');
+            nav.addEventListener('click', (e) => goToPage(e.currentTarget.dataset.targetpage));
+            nav.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToPage(e.currentTarget.dataset.targetpage); } });
+        });
+        backButtons.forEach(button => {
+            button.addEventListener('click', (e) => { e.preventDefault(); goToPage(e.currentTarget.dataset.targetpage); });
+            button.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goToPage(e.currentTarget.dataset.targetpage); } });
+        });
+        initThree();
+        if (typeof renderer !== 'undefined' && renderer) { createParticles(); setupMouseListeners(); animateThreeJS(); }
+        goToPage(1);
+    </script>
+</body>
+</html>
